@@ -278,7 +278,7 @@ FlutterMethodChannel* _channel;
     
     [self setNowPlaying];
 
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"true\"}"];
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"true\"}"];
 }
 
 - (void) playerPause {
@@ -287,7 +287,7 @@ FlutterMethodChannel* _channel;
     if (audioPlayer.currentItem != nil){
         [audioPlayer pause];
     }
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"false\"}"];
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerPaused];
@@ -303,7 +303,7 @@ FlutterMethodChannel* _channel;
         [audioPlayer removeObserver:self forKeyPath:@"rate"];
         audioPlayer = nil;
     }
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"false\"}"];
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerStopped];
