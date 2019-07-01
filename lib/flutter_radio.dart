@@ -93,9 +93,11 @@ class FlutterRadio {
           _playerController.add(new PlayStatus.fromJSON(result));
           break;
         case "stateChanged":
-          debugPrint('on stateChanged');
+          debugPrint('on stateChanged0 ${call.arguments}');
           Map<String, dynamic> result = jsonDecode(call.arguments);
+          debugPrint('on stateChanged1 $result');
           _playerState.add(new PlayState.fromJSON(result).isPlaying);
+          debugPrint('on stateChanged added');
           break;
         default:
           throw new ArgumentError('Unknown method ${call.method}');
