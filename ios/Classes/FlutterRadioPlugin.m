@@ -235,7 +235,7 @@ FlutterMethodChannel* _channel;
             return [meta objectForKey:@"coverUrl"];
         }];
     } else {
-        UIImage* image = [UIImage imageWithData: [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: [meta objectForKey:@"coverUrl"]]]];
+        UIImage* image = [UIImage imageWithData: [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: [meta objectForKey:@"thumb"]]]];
         ControlArtwork = [[MPMediaItemArtwork alloc] initWithImage: image];
     }
     
