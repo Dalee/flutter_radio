@@ -7,16 +7,12 @@ import 'package:flutter/services.dart';
 class FlutterRadio {
   static const MethodChannel _channel = const MethodChannel('flutter_radio');
   static StreamController<PlayStatus> _playerController;
-  static StreamController<bool> _playerState;
+  static StreamController<bool> _playerState = StreamController.broadcast();
   /// Value ranges from 0 to 120
   static Stream<PlayStatus> get onPlayerStateChanged => _playerController.stream;
   static Stream<bool> get onIsPlayingChanged => _playerState.stream;
 
   static bool _isPlaying = false;
-
-  FlutterRadio() {
-    _playerState = new StreamController.broadcast();
-  }
   
   static Future<void> audioStart([AudioPlayerItem item]) async {
     if (item != null) {
