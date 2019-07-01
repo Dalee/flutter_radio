@@ -257,7 +257,7 @@ FlutterMethodChannel* _channel;
     NSLog(@"playerPlayPause");
     if (_isPlaying) {
         NSLog(@"playerPlayPause pause");
-        [self playerStop];
+        [self playerPause];
     }else{
         NSLog(@"playerPlayPause play");
         [self playerStart];
