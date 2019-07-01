@@ -232,7 +232,7 @@ FlutterMethodChannel* _channel;
     MPMediaItemArtwork* ControlArtwork;
     if (@available(iOS 10.0, *)) {
         ControlArtwork = [[MPMediaItemArtwork alloc] initWithBoundsSize:CGSizeMake(600, 600) requestHandler:^UIImage * _Nonnull(CGSize size) {
-            return [meta objectForKey:@"thumb"];
+            return [UIImage imageWithData: [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: [meta objectForKey:@"thumb"]]]];
         }];
     } else {
         UIImage* image = [UIImage imageWithData: [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: [meta objectForKey:@"thumb"]]]];
@@ -250,6 +250,7 @@ FlutterMethodChannel* _channel;
     
     result(@"meta set");
 }
+
 
 // Native stuff
 
