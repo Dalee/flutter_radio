@@ -93,7 +93,8 @@ class FlutterRadio {
           _playerController.add(new PlayStatus.fromJSON(result));
           break;
         case "stateChanged":
-        Map<String, dynamic> result = jsonDecode(call.arguments);
+          debugPrint('on stateChanged');
+          Map<String, dynamic> result = jsonDecode(call.arguments);
           _playerState.add(new PlayState.fromJSON(result).isPlaying);
           break;
         default:

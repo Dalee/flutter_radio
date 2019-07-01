@@ -174,6 +174,8 @@ FlutterMethodChannel* _channel;
     if (audioPlayer) {
         [self stopTimer];
         [self playerPause];
+    
+        [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
         result(@"pause play");
     } else {
         result([FlutterError
@@ -187,6 +189,7 @@ FlutterMethodChannel* _channel;
     if (audioPlayer) {
         [self stopTimer];
         [self playerStop];
+        [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
         result(@"stop play");
     } else {
         result([FlutterError
@@ -200,6 +203,7 @@ FlutterMethodChannel* _channel;
     NSLog(@"startPlayer");
     audioFileURL = [NSURL URLWithString:path];
     
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"true\"}"];
     [self playerStart];
     
     NSString *filePath = audioFileURL.absoluteString;
