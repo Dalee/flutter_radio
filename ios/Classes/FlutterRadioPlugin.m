@@ -175,7 +175,6 @@ FlutterMethodChannel* _channel;
         [self stopTimer];
         [self playerPause];
     
-        [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
         result(@"pause play");
     } else {
         result([FlutterError
@@ -189,7 +188,6 @@ FlutterMethodChannel* _channel;
     if (audioPlayer) {
         [self stopTimer];
         [self playerStop];
-        [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
         result(@"stop play");
     } else {
         result([FlutterError
@@ -203,7 +201,6 @@ FlutterMethodChannel* _channel;
     NSLog(@"startPlayer");
     audioFileURL = [NSURL URLWithString:path];
     
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"true\"}"];
     [self playerStart];
     
     NSString *filePath = audioFileURL.absoluteString;
@@ -280,6 +277,8 @@ FlutterMethodChannel* _channel;
     [audioPlayer addObserver:self forKeyPath:@"rate" options:0 context:nil];
     
     [self setNowPlaying];
+
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"true\"}"];
 }
 
 - (void) playerPause {
@@ -288,6 +287,7 @@ FlutterMethodChannel* _channel;
     if (audioPlayer.currentItem != nil){
         [audioPlayer pause];
     }
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerPaused];
@@ -303,6 +303,7 @@ FlutterMethodChannel* _channel;
         [audioPlayer removeObserver:self forKeyPath:@"rate"];
         audioPlayer = nil;
     }
+    [_channel invokeMethod:@"stateChanged" arguments:@"{\"duration\": \"false\"}"];
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerStopped];
