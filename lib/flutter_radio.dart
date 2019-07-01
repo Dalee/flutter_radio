@@ -9,8 +9,8 @@ class FlutterRadio {
   static StreamController<PlayStatus> _playerController;
   static StreamController<bool> _playerState;
   /// Value ranges from 0 to 120
-  Stream<PlayStatus> get onPlayerStateChanged => _playerController.stream;
-  Stream<bool> get onIsPlayingChanged => _playerState.stream;
+  static Stream<PlayStatus> get onPlayerStateChanged => _playerController.stream;
+  static Stream<bool> get onIsPlayingChanged => _playerState.stream;
 
   static bool _isPlaying = false;
 
