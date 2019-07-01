@@ -7,11 +7,17 @@ import 'package:flutter/services.dart';
 class FlutterRadio {
   static const MethodChannel _channel = const MethodChannel('flutter_radio');
   static StreamController<PlayStatus> _playerController;
+  static StreamController<bool> _playerState;
   /// Value ranges from 0 to 120
   Stream<PlayStatus> get onPlayerStateChanged => _playerController.stream;
+  Stream<bool> get onIsPlayingChanged => _playerState.stream;
 
   static bool _isPlaying = false;
 
+  FlutterRadio() {
+    _playerState = new StreamController.broadcast();
+  }
+  
   static Future<void> audioStart([AudioPlayerItem item]) async {
     if (item != null) {
       await setMeta(item);
@@ -90,6 +96,10 @@ class FlutterRadio {
           Map<String, dynamic> result = jsonDecode(call.arguments);
           _playerController.add(new PlayStatus.fromJSON(result));
           break;
+        case "stateChanged":
+        Map<String, dynamic> result = jsonDecode(call.arguments);
+          _playerState.add(new PlayState.fromJSON(result).isPlaying);
+          break;
         default:
           throw new ArgumentError('Unknown method ${call.method}');
       }
@@ -140,6 +150,18 @@ class PlayStatus {
   String toString() {
     return 'duration: $duration, '
         'currentPosition: $currentPosition';
+  }
+}
+
+class PlayState {
+  final bool isPlaying;
+
+  PlayState.fromJSON(Map<String, dynamic> json)
+      : isPlaying = json['isPlaying'].toLowerCase() == 'true';
+
+  @override
+  String toString() {
+    return 'isPlaying: $isPlaying';
   }
 }
 
