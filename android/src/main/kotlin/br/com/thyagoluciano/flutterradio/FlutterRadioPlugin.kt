@@ -20,6 +20,8 @@ class FlutterRadioPlugin(val mRegistrar: Registrar): MethodCallHandler {
     fun registerWith(registrar: Registrar): Unit {
       channel = MethodChannel(registrar.messenger(), "flutter_radio")
       channel.setMethodCallHandler(FlutterRadioPlugin(registrar))
+      if (EventBus.getDefault().hasSubscriberForEvent(String::class.java))
+        EventBus.getDefault().unregister(this)
       EventBus.getDefault().register(this)
     }
 
