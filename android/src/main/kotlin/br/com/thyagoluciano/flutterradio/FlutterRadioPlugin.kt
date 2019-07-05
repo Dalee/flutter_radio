@@ -7,16 +7,25 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class FlutterRadioPlugin(val mRegistrar: Registrar): MethodCallHandler {
 
   lateinit var radioManager: RadioManager
 
   companion object {
+    private lateinit var channel: MethodChannel
     @JvmStatic
     fun registerWith(registrar: Registrar): Unit {
-      val channel = MethodChannel(registrar.messenger(), "flutter_radio")
+      channel = MethodChannel(registrar.messenger(), "flutter_radio")
       channel.setMethodCallHandler(FlutterRadioPlugin(registrar))
+      EventBus.getDefault().register(this)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: String) {
+      channel.invokeMethod("onMessage", event);
     }
   }
 

@@ -8,9 +8,11 @@ class FlutterRadio {
   static const MethodChannel _channel = const MethodChannel('flutter_radio');
   static StreamController<PlayStatus> _playerController;
   static StreamController<bool> _playerState = StreamController.broadcast();
+  static StreamController<String> _playerMessage = StreamController.broadcast();
   /// Value ranges from 0 to 120
   static Stream<PlayStatus> get onPlayerStateChanged => _playerController.stream;
   static Stream<bool> get onIsPlayingChanged => _playerState.stream;
+  static Stream<String> get onMessageReceived => _playerMessage.stream;
 
   static bool _isPlaying = false;
   
@@ -95,6 +97,9 @@ class FlutterRadio {
         case "stateChanged":
           Map<String, dynamic> result = jsonDecode(call.arguments);
           _playerState.add(new PlayState.fromJSON(result).isPlaying);
+          break;
+        case "onMessage":
+          _playerMessage.add(call.arguments);
           break;
         default:
           throw new ArgumentError('Unknown method ${call.method}');

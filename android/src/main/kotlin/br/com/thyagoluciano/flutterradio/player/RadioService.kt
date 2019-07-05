@@ -124,7 +124,6 @@ class RadioService(val context: Context) : Player.EventListener, AudioManager.On
             Player.STATE_READY -> if (playWhenReady) PlaybackStatus.PLAYING else PlaybackStatus.PAUSED
             else -> PlaybackStatus.IDLE
         }
-
         if (EventBus.getDefault().hasSubscriberForEvent(String::class.java))
             EventBus.getDefault().post(status)
     }

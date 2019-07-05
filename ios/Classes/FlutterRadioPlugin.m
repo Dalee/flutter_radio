@@ -280,6 +280,7 @@ FlutterMethodChannel* _channel;
     [self setNowPlaying];
 
     [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"true\"}"];
+    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_LOADING"];
 }
 
 - (void) playerPause {
@@ -293,6 +294,8 @@ FlutterMethodChannel* _channel;
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerPaused];
     }
+
+    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_PAUSED"];
 }
 
 - (void) playerStop {
@@ -309,6 +312,7 @@ FlutterMethodChannel* _channel;
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerStopped];
     }
+    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_STOPPED"];
     
     [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nil;
 }
@@ -361,8 +365,9 @@ FlutterMethodChannel* _channel;
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onFailedPrepare];
     }
-    
-}
+
+    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_ERROR"];
+    }
 
 - (void) _onPlaybackRateChange {
     NSLog(@"Rate just changed to %f", audioPlayer.rate);
@@ -372,6 +377,7 @@ FlutterMethodChannel* _channel;
         for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
             [listener onPlayerPlaying];
         }
+        [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_PLAYING"];
         _isPlaying = YES;
     } else if (audioPlayer.rate == 0 && _isPlaying) {
         // Just paused playing.
@@ -379,6 +385,7 @@ FlutterMethodChannel* _channel;
         for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
             [listener onPlayerPaused];
         }
+        [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_PAUSED"];
         _isPlaying = NO;
     }
 }
