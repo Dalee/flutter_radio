@@ -27,6 +27,10 @@ class FlutterRadioPlugin(val mRegistrar: Registrar): MethodCallHandler {
     fun onMessageEvent(event: String) {
       channel.invokeMethod("onMessage", event);
     }
+
+    fun onDestroy() {
+      EventBus.getDefault().unregister(this)
+    }
   }
 
   override fun onMethodCall(call: MethodCall, result: Result): Unit {
