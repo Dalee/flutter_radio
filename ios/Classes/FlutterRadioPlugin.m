@@ -101,7 +101,7 @@ FlutterMethodChannel* _channel;
 }
 
 - (void) stopTimer{
-    NSLog(@"stopTimer");
+    // NSLog(@"stopTimer");
     if (timer != nil) {
         [timer invalidate];
         timer = nil;
@@ -274,13 +274,19 @@ FlutterMethodChannel* _channel;
     audioPlayer = [AVPlayer playerWithPlayerItem:playerItem];
     
     //get audio state and call listeners
-    [audioPlayer addObserver:self forKeyPath:@"status" options:0 context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackStalled:) name:AVPlayerItemPlaybackStalledNotification object:audioPlayer.currentItem];
+    [audioPlayer.currentItem addObserver:self forKeyPath:@"status" options:0 context:nil];
     [audioPlayer addObserver:self forKeyPath:@"rate" options:0 context:nil];
     
     [self setNowPlaying];
 
     [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"true\"}"];
     [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_LOADING"];
+}
+
+- (void)playbackStalled:(NSNotification *)notification {
+    NSLog(@"player stalled");
+    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_ERROR"];
 }
 
 - (void) playerPause {
@@ -305,6 +311,7 @@ FlutterMethodChannel* _channel;
         [audioPlayer pause];
         [audioPlayer removeObserver:self forKeyPath:@"status"];
         [audioPlayer removeObserver:self forKeyPath:@"rate"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemPlaybackStalledNotification object:nil];
         audioPlayer = nil;
     }
     [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"false\"}"];
@@ -337,7 +344,7 @@ FlutterMethodChannel* _channel;
             NSLog(@"observableStatus: AVPlayerStatusFailed");
             [self _onFailedToPrepareAudio];
         } else {
-            NSLog(@"observableStatus: AVPlayerStatusUnknown");
+            NSLog(@"observableStatus: AVPlayerStatusUnknown", audioPlayer.status);
         }
     } else if ([keyPath isEqualToString:@"rate"]) {
         [self _onPlaybackRateChange];
