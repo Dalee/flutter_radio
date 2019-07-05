@@ -209,7 +209,7 @@ PlaybackStatus stringToEnum(String str) {
     case "PlaybackStatus_LOADING":
       return PlaybackStatus.LOADING;
     case "PlaybackStatus_PLAYING":
-      return PlaybackStatus.LOADING;
+      return PlaybackStatus.PLAYING;
     case "PlaybackStatus_PAUSED":
       return PlaybackStatus.PAUSED;
     case "PlaybackStatus_STOPPED":
