@@ -280,8 +280,7 @@ FlutterMethodChannel* _channel;
     
     [self setNowPlaying];
 
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"true\"}"];
-    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_LOADING"];
+    [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_CONNECTING"];
 }
 
 - (void)playbackStalled:(NSNotification *)notification {
@@ -295,7 +294,6 @@ FlutterMethodChannel* _channel;
     if (audioPlayer.currentItem != nil){
         [audioPlayer pause];
     }
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"false\"}"];
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerPaused];
@@ -314,7 +312,6 @@ FlutterMethodChannel* _channel;
         [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemPlaybackStalledNotification object:nil];
         audioPlayer = nil;
     }
-    [_channel invokeMethod:@"stateChanged" arguments:@"{\"isPlaying\": \"false\"}"];
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
         [listener onPlayerStopped];
@@ -344,7 +341,7 @@ FlutterMethodChannel* _channel;
             NSLog(@"observableStatus: AVPlayerStatusFailed");
             [self _onFailedToPrepareAudio];
         } else {
-            NSLog(@"observableStatus: AVPlayerStatusUnknown", audioPlayer.status);
+            NSLog(@"observableStatus: AVPlayerStatusUnknown");
         }
     } else if ([keyPath isEqualToString:@"rate"]) {
         [self _onPlaybackRateChange];
@@ -362,6 +359,7 @@ FlutterMethodChannel* _channel;
         }
         
         [audioPlayer play];
+        [_channel invokeMethod:@"onMessage" arguments:@"PlaybackStatus_PLAYING"];
         [self startTimer];
     }
 }
