@@ -48,9 +48,6 @@ class FlutterRadio {
 
       _setPlayerCallback();
 
-      if (FlutterRadio._isPlaying) {
-        throw Exception('Player is already playing.');
-      }
       FlutterRadio._isPlaying = true;
 
       return result;
@@ -60,9 +57,6 @@ class FlutterRadio {
   }
 
   static Future<void> pause({@required String url}) async {
-    if (!FlutterRadio._isPlaying) {
-      throw Exception('Player already stopped.');
-    }
     FlutterRadio._isPlaying = false;
 
     final Map<String, dynamic> params = <String, dynamic>{'url': url};
@@ -72,9 +66,6 @@ class FlutterRadio {
   }
 
   static Future<void> stop() async {
-    if (!FlutterRadio._isPlaying) {
-      throw Exception('Player already stopped.');
-    }
     FlutterRadio._isPlaying = false;
 
     String result = await _channel.invokeMethod('stop');
