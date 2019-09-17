@@ -293,6 +293,9 @@ FlutterMethodChannel* _channel;
     
     if (audioPlayer.currentItem != nil){
         [audioPlayer pause];
+        [audioPlayer.currentItem removeObserver:self forKeyPath:@"status"];
+        [audioPlayer removeObserver:self forKeyPath:@"rate"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemPlaybackStalledNotification object:nil];
     }
     
     for (id<AudioPlayerListener> listener in [_listeners allObjects]) {
